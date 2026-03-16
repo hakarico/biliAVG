@@ -1,5 +1,5 @@
 # biliAVG
-b站网页小插件，用于提升AVG文字冒险游戏实况的观看体验。基于Chromium，默认支持chrome Edge
+b站网页小插件，用于提升AVG文字冒险游戏实况的观看体验。默认支持chrome Edge
 
 ## 功能
 - 自定义快进快退时间
