@@ -176,7 +176,7 @@ window.addEventListener('keyup', (e) => {
 (function() {
     // 1. 精细化配置参数
     const CONFIG = {
-        shortcutKey: 'v', // 按下 'M' 键创建标记
+        shortcutKey: 'z', // 按下 'z' 键创建标记
         // 使用更纯净、具有发光感的主题蓝
         markerColor: '#079F90', 
         // 定义更小的尺寸：宽度 10px，高度约 6.5px (依据你的图片比例)
