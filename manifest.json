@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "B站 AVG 辅助播放",
+  "version": "1.1",
+  "description": "自定义B站方向键跳跃时间，支持快退后自动暂停，专为阅读文字类视频设计",
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.bilibili.com/video/*", "*://www.bilibili.com/list/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "128": "icon.png"
+  }
+}

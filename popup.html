@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    /* 基础变量 */
+    :root {
+      --primary-highlight: rgba(255, 255, 255, 0.25);
+      --text-color: #ffffff;
+      /* 自定义背景图路径：建议使用高斯模糊处理过的图片，或者色彩丰富的图片 */
+      --bg-image: url('https://i0.hdslb.com/bfs/new_dyn/0ac2bffcd1723047cf526e5907cf83e652878841.jpg'); 
+    }
+
+    /* 整个 Popup 即为毛玻璃容器 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 160px; /* 进一步收窄，更精简 */
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-image) no-repeat center center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 全局毛玻璃遮罩层 */
+    .glass-wrapper {
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.5); /* 基础暗调，增强文字对比度 */
+      backdrop-filter: blur(2px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--text-color);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      cursor: default;
+    }
+
+    /* 输入框：无背景化设计 */
+    input[type="number"] {
+      width: 38px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      color: #fff;
+      outline: none;
+      font-size: 12px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    input[type="number"]:focus {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      width: 12px;
+      height: 12px;
+      accent-color: #00a1d6;
+    }
+
+    /* “保存”按钮：彻底去边框化 */
+    #saveBtn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text-color);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 0;
+      margin-top: 4px;
+      cursor: pointer;
+      border-radius: 8px; /* 悬浮高亮区域的圆角 */
+      transition: all 0.3s ease;
+      letter-spacing: 2px;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 鼠标悬浮在文字上时，高亮一圈略大的范围 */
+    #saveBtn:hover {
+      background: var(--primary-highlight);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    #saveBtn:active {
+      transform: translateY(0px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-wrapper">
+    <div class="row">
+      <label>跳跃时间</label>
+      <input type="number" id="jumpTime" min="1" max="60" value="5">
+    </div>
+    
+    <div class="row">
+      <label>快退暂停</label>
+      <input type="checkbox" id="pauseOnRewind">
+    </div>
+
+    <div class="row">
+      <label>倍速暂停</label>
+      <input type="checkbox" id="restorePause">
+  </div>
+
+    <button id="saveBtn">保存</button>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
