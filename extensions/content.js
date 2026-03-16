@@ -171,3 +171,75 @@ window.addEventListener('keyup', (e) => {
     const bpxObserver = new MutationObserver(() => inject175Speed());
     bpxObserver.observe(document.body, { childList: true, subtree: true });
 })();
+
+///临时标记///
+(function() {
+    // 1. 精细化配置参数
+    const CONFIG = {
+        shortcutKey: 'v', // 按下 'M' 键创建标记
+        // 使用更纯净、具有发光感的主题蓝
+        markerColor: '#079F90', 
+        // 定义更小的尺寸：宽度 10px，高度约 6.5px (依据你的图片比例)
+        markerWidth: '10px',
+        markerHeight: '6.5px' 
+    };
+
+    // 2. 核心逻辑：获取视频信息并放置标记
+    function createMarker() {
+        const video = document.querySelector('video');
+        const progressContainer = document.querySelector('.bpx-player-progress-area') || 
+                                  document.querySelector('.squirtle-progress-area');
+
+        if (!video || !progressContainer) {
+            console.warn('未找到视频播放器或进度条容器');
+            return;
+        }
+
+        // 计算当前进度百分比
+        const percentage = (video.currentTime / video.duration) * 100;
+
+        // --- UI 精细化实现：使用 SVG 替代 CSS Border 绘图 ---
+        // 这样可以绘制出更像你图片的、带有特定折角的精致图形，而非直边三角形
+
+        const markerContainer = document.createElement('div');
+        markerContainer.className = 'custom-video-marker-v2';
+        
+        // 容器样式：用于定位和应用投影
+        Object.assign(markerContainer.style, {
+            position: 'absolute',
+            left: `${percentage}%`,
+            top: '-4px', // 向上偏移，使其悬浮在进度条上方，更具空气感
+            width: CONFIG.markerWidth,
+            height: CONFIG.markerHeight,
+            transform: 'translateX(-50%)', // 自身居中对齐
+            zIndex: '1000',
+            pointerEvents: 'none',
+            // --- 审美的灵魂：添加微弱的发光投影，模拟你图片中的质感 ---
+            filter: `drop-shadow(0 0 2px ${CONFIG.markerColor}80)` // 80 是 50% 不透明度
+        });
+
+        // 内部填充 SVG，以 10x6.5 为基准绘制图形
+        markerContainer.innerHTML = `
+            <svg width="100%" height="100%" viewBox="0 0 10 6.5" preserveAspectRatio="none" style="display:block;">
+                <path d="M0.5,0 L9.5,0 L9.5,1 L5,6 L0.5,1 Z" fill="${CONFIG.markerColor}"/>
+            </svg>
+        `;
+
+        // 插入到进度条容器中
+        progressContainer.appendChild(markerContainer);
+        
+        console.log(`标记已创建：${Math.round(video.currentTime)}s`);
+    }
+
+    // 3. 监听键盘事件
+    window.addEventListener('keydown', (e) => {
+        const activeEl = document.activeElement.tagName.toLowerCase();
+        if (activeEl === 'input' || activeEl === 'textarea') return;
+
+        if (e.key.toLowerCase() === CONFIG.shortcutKey) {
+            createMarker();
+        }
+    });
+
+    console.log('Bilibili 标记插件(精细版)已激活。');
+})();
