@@ -139,36 +139,62 @@ window.addEventListener('keyup', (e) => {
     }
 }, true);
 
-/* Bilibili 1.75x Speed Injector */
+/* Bilibili Custom Speed Injector (Fixed Order) */
 (() => {
-    const inject175Speed = () => {
+    // 你可以在这里随意添加倍速，脚本会自动按倒序排列
+    const mySpeeds = [1.75, 1.39];
+
+    const injectSpeeds = () => {
         const speedList = document.querySelector('.bpx-player-ctrl-playbackrate-menu');
-        if (speedList && !speedList.querySelector('.speed-item-175')) {
-            const items = speedList.querySelectorAll('li');
-            if (items.length === 0) return;
+        if (!speedList) return;
 
-            const templateNode = items[0]; 
-            const newSpeedNode = templateNode.cloneNode(true);
+        // 获取当前已有的所有倍速节点，转为数组方便处理
+        let items = Array.from(speedList.querySelectorAll('li'));
+        if (items.length === 0) return;
+
+        mySpeeds.forEach(speedValue => {
+            const className = `speed-item-${speedValue.toString().replace('.', '')}`;
             
-            newSpeedNode.innerText = '1.75x';
-            newSpeedNode.dataset.value = '1.75';
-            newSpeedNode.classList.add('speed-item-175');
-            newSpeedNode.classList.remove('bpx-state-active');
+            // 避免重复插入
+            if (speedList.querySelector(`.${className}`)) return;
 
-            newSpeedNode.onclick = (e) => {
+            // 1. 克隆模板（用第一个节点 2.0x 保证样式一致）
+            const newNode = items[0].cloneNode(true);
+            newNode.innerText = speedValue + 'x';
+            newNode.dataset.value = speedValue.toString();
+            newNode.className = `bpx-player-ctrl-playbackrate-menu-item ${className}`;
+            newNode.classList.remove('bpx-state-active');
+
+            // 2. 核心逻辑：寻找插入位置
+            // 遍历现有节点，找到第一个“数值比新倍速小”的节点，插在它前面
+            const referenceNode = items.find(li => {
+                const val = parseFloat(li.dataset.value || li.innerText);
+                return val < speedValue;
+            });
+
+            if (referenceNode) {
+                speedList.insertBefore(newNode, referenceNode);
+            } else {
+                speedList.appendChild(newNode); // 如果没找到比它小的，就放最后
+            }
+
+            // 3. 重新获取 items 数组，确保下一个自定义倍速能参考到刚插入的节点
+            items = Array.from(speedList.querySelectorAll('li'));
+
+            // 4. 绑定点击事件
+            newNode.onclick = (e) => {
                 const video = document.querySelector('video');
                 if (video) {
-                    video.playbackRate = 1.75;
+                    video.playbackRate = speedValue;
                     speedList.querySelectorAll('li').forEach(li => li.classList.remove('bpx-state-active'));
-                    newSpeedNode.classList.add('bpx-state-active');
+                    newNode.classList.add('bpx-state-active');
                     e.stopPropagation();
                 }
             };
-            templateNode.parentNode.insertBefore(newSpeedNode, templateNode.nextSibling);
-        }
+        });
     };
 
-    const bpxObserver = new MutationObserver(() => inject175Speed());
+    const bpxObserver = new MutationObserver(() => injectSpeeds());
     bpxObserver.observe(document.body, { childList: true, subtree: true });
 })();
 
